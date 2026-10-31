@@ -62,7 +62,7 @@ export default function FeatureOverridesPage() {
   return (
     <div className="space-y-6 max-w-xl">
       <div>
-        <Link href={`/orgs/${id}`} className="text-sm text-sky-600 hover:text-sky-800">&larr; Back to org</Link>
+        <Link href={`/orgs/${id}`} className="text-sm text-brand-600 hover:text-brand-800">&larr; Back to org</Link>
         <h1 className="text-2xl font-bold text-gray-900 mt-1">Feature Overrides</h1>
         <p className="text-sm text-gray-500 mt-0.5">Force-enable or force-disable features for this organisation.</p>
       </div>
@@ -80,8 +80,8 @@ export default function FeatureOverridesPage() {
                 role="switch"
                 aria-checked={override?.enabled ?? false}
                 onClick={() => toggle(feature.key)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 ${
-                  override?.enabled ? 'bg-sky-500' : 'bg-gray-200'
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 ${
+                  override?.enabled ? 'bg-brand-500' : 'bg-gray-200'
                 }`}
               >
                 <span
@@ -101,7 +101,7 @@ export default function FeatureOverridesPage() {
       <button
         onClick={() => void handleSave()}
         disabled={saving}
-        className="bg-sky-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm disabled:opacity-60"
+        className="bg-brand-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm disabled:opacity-60"
       >
         {saving ? 'Saving...' : 'Save overrides'}
       </button>

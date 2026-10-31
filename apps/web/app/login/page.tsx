@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
@@ -22,7 +23,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <img src="/logo.png" alt="FoundTab" className="h-10 mx-auto" />
+          <Image src="/logo.png" alt="FoundTab" width={160} height={44} className="h-10 w-auto mx-auto" priority />
           <span className="inline-block mt-2 text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Admin Portal</span>
         </div>
 
@@ -61,7 +62,7 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
             required
-            className="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
           <input
             type="password"
@@ -69,12 +70,12 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             required
-            className="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="w-full border border-gray-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-sky-500 text-white font-semibold py-2.5 rounded-xl text-sm disabled:opacity-60"
+            className="w-full bg-brand-500 text-white font-semibold py-2.5 rounded-xl text-sm disabled:opacity-60"
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>

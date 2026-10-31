@@ -3,7 +3,26 @@ import type { Config } from 'tailwindcss'
 export default {
   content: ['./app/**/*.{ts,tsx}', './src/**/*.{ts,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      colors: {
+        brand: {
+          50: '#FBF7EE',
+          100: '#F3E8CC',
+          200: '#E5CE98',
+          300: '#D4AD64',
+          400: '#C9A84C',
+          500: '#B8923A',
+          600: '#9A7530',
+          700: '#7A5A22',
+          800: '#5A3F14',
+          900: '#3A250A',
+          950: '#1C0F05',
+        },
+      },
+    },
   },
   plugins: [],
 } satisfies Config

@@ -19,7 +19,7 @@ type ListResponse = {
 
 const PLAN_COLORS: Record<string, string> = {
   TRIAL:   'bg-gray-100 text-gray-600',
-  STARTER: 'bg-sky-100 text-sky-700',
+  STARTER: 'bg-brand-100 text-brand-700',
   GROWTH:  'bg-emerald-100 text-emerald-700',
   ADVANCE: 'bg-violet-100 text-violet-700',
   PRO:     'bg-amber-100 text-amber-700',
@@ -70,11 +70,11 @@ export default async function OrgsPage({ searchParams }: PageProps) {
             name="search"
             defaultValue={search}
             placeholder="Search name…"
-            className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-52 focus:outline-none focus:ring-2 focus:ring-sky-400"
+            className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-52 focus:outline-none focus:ring-2 focus:ring-brand-400"
           />
           <button
             type="submit"
-            className="bg-sky-500 text-white text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-sky-600 transition-colors"
+            className="bg-brand-500 text-white text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand-600 transition-colors"
           >
             Search
           </button>
@@ -115,7 +115,7 @@ export default async function OrgsPage({ searchParams }: PageProps) {
                 <td className="px-4 py-3 text-gray-600">{org.memberCount}</td>
                 <td className="px-4 py-3 text-gray-500">{formatDate(org.createdAt)}</td>
                 <td className="px-4 py-3">
-                  <Link href={`/orgs/${org.id}`} className="text-xs text-sky-600 font-medium hover:text-sky-800">
+                  <Link href={`/orgs/${org.id}`} className="text-xs text-brand-600 font-medium hover:text-brand-800">
                     View →
                   </Link>
                 </td>

@@ -30,7 +30,7 @@ function InfoRow({ label, value }: { label: string; value: string | number | nul
 
 const PLAN_COLORS: Record<string, string> = {
   TRIAL:   'bg-gray-100 text-gray-600',
-  STARTER: 'bg-sky-100 text-sky-700',
+  STARTER: 'bg-brand-100 text-brand-700',
   GROWTH:  'bg-emerald-100 text-emerald-700',
   ADVANCE: 'bg-violet-100 text-violet-700',
   PRO:     'bg-amber-100 text-amber-700',
@@ -51,7 +51,7 @@ export default async function OrgDetailPage({ params }: { params: { id: string }
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <Link href="/orgs" className="text-sm text-sky-600 hover:text-sky-800">&larr; Organisations</Link>
+          <Link href="/orgs" className="text-sm text-brand-600 hover:text-brand-800">&larr; Organisations</Link>
           <h1 className="text-2xl font-bold text-gray-900 mt-1">{org.name}</h1>
           <div className="flex gap-2 mt-1">
             <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${PLAN_COLORS[org.plan] ?? 'bg-gray-100 text-gray-600'}`}>

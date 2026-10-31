@@ -16,7 +16,7 @@ const PLAN_LABELS: Record<Plan, string> = {
 
 const PLAN_COLORS: Record<Plan, string> = {
   TRIAL:   'bg-gray-100 text-gray-600',
-  STARTER: 'bg-sky-100 text-sky-700',
+  STARTER: 'bg-brand-100 text-brand-700',
   GROWTH:  'bg-emerald-100 text-emerald-700',
   ADVANCE: 'bg-violet-100 text-violet-700',
   PRO:     'bg-amber-100 text-amber-700',
@@ -72,7 +72,7 @@ export default function PlanControl({ orgId, currentPlan }: { orgId: string; cur
         <button
           onClick={() => void handleSave()}
           disabled={saving || !hasChanged}
-          className="bg-sky-500 text-white font-semibold px-4 py-2 rounded-lg text-sm hover:bg-sky-600 transition-colors disabled:opacity-40"
+          className="bg-brand-500 text-white font-semibold px-4 py-2 rounded-lg text-sm hover:bg-brand-600 transition-colors disabled:opacity-40"
         >
           {saving ? 'Saving...' : 'Save plan'}
         </button>

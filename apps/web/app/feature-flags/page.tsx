@@ -44,7 +44,7 @@ const TIER_LABELS: Record<string, string> = {
 }
 
 const TIER_COLORS: Record<string, string> = {
-  starter: 'bg-sky-100 text-sky-700',
+  starter: 'bg-brand-100 text-brand-700',
   growth: 'bg-emerald-100 text-emerald-700',
   advance: 'bg-violet-100 text-violet-700',
   pro: 'bg-amber-100 text-amber-700',
@@ -131,7 +131,7 @@ export default function FeatureFlagsPage() {
                     aria-checked={flags[mod.key]}
                     onClick={() => toggle(mod.key)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                      flags[mod.key] ? 'bg-sky-500' : 'bg-gray-200'
+                      flags[mod.key] ? 'bg-brand-500' : 'bg-gray-200'
                     }`}
                   >
                     <span
@@ -151,7 +151,7 @@ export default function FeatureFlagsPage() {
         <button
           onClick={() => void handleSave()}
           disabled={saving}
-          className="bg-sky-500 text-white font-semibold px-6 py-2.5 rounded-lg text-sm hover:bg-sky-600 transition-colors disabled:opacity-60"
+          className="bg-brand-500 text-white font-semibold px-6 py-2.5 rounded-lg text-sm hover:bg-brand-600 transition-colors disabled:opacity-60"
         >
           {saving ? 'Saving...' : 'Save flags'}
         </button>
