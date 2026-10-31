@@ -1,8 +1,8 @@
 import { z } from 'zod'
 
 const schema = z.object({
-  FOUNDTAB_ADMIN_API_KEY: z.string().min(32),
-  NEXT_PUBLIC_API_URL: z.string().url(),
+  PORTAL_API_URL: z.string().url().default('http://localhost:4000'),
+  PORTAL_INTERNAL_SECRET: z.string().min(32),
   NEXT_PUBLIC_APP_ENV: z.enum(['local', 'staging', 'production']).default('local'),
 })
 

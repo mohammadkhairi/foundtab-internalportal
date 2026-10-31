@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  check:
-    name: Typecheck + Lint + Build
+  check-api:
+    name: API — Typecheck
     runs-on: ubuntu-latest
 
     steps:
@@ -21,17 +21,40 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --workspace=apps/api
 
       - name: Typecheck
-        run: npm run typecheck
+        run: npm run typecheck --workspace=apps/api
+
+  check-web:
+    name: Web — Typecheck + Lint + Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --workspace=apps/web
+
+      - name: Typecheck
+        run: npm run typecheck --workspace=apps/web
 
       - name: Lint
-        run: npm run lint
+        run: npm run lint --workspace=apps/web
 
       - name: Build
-        run: npm run build
+        run: npm run build --workspace=apps/web
         env:
-          FOUNDTAB_ADMIN_API_KEY: ${{ secrets.FOUNDTAB_ADMIN_API_KEY }}
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          PORTAL_API_URL: ${{ secrets.PORTAL_API_URL }}
+          PORTAL_INTERNAL_SECRET: ${{ secrets.PORTAL_INTERNAL_SECRET }}
           NEXT_PUBLIC_APP_ENV: staging
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          PORTAL_ALLOWED_EMAILS: ${{ secrets.PORTAL_ALLOWED_EMAILS }}
+          PORTAL_ADMIN_PASSWORD: ${{ secrets.PORTAL_ADMIN_PASSWORD }}

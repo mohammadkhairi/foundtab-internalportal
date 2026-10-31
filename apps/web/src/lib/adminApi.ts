@@ -16,11 +16,11 @@ type AdminFetchOptions = RequestInit
 export async function adminFetch<T>(path: string, options: AdminFetchOptions = {}): Promise<T> {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    'x-admin-api-key': env.FOUNDTAB_ADMIN_API_KEY,
+    'x-portal-secret': env.PORTAL_INTERNAL_SECRET,
     ...options.headers,
   }
 
-  const response = await fetch(`${env.NEXT_PUBLIC_API_URL}${path}`, { ...options, headers })
+  const response = await fetch(`${env.PORTAL_API_URL}${path}`, { ...options, headers })
 
   if (!response.ok) {
     const body = (await response.json().catch(() => ({}))) as { error?: string; message?: string }

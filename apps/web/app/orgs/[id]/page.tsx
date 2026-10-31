@@ -1,5 +1,6 @@
 import { adminFetch } from '../../../src/lib/adminApi'
 import Link from 'next/link'
+import PlanControl from './PlanControl'
 
 type OrgDetail = {
   id: string
@@ -27,8 +28,24 @@ function InfoRow({ label, value }: { label: string; value: string | number | nul
   )
 }
 
+const PLAN_COLORS: Record<string, string> = {
+  TRIAL:   'bg-gray-100 text-gray-600',
+  STARTER: 'bg-sky-100 text-sky-700',
+  GROWTH:  'bg-emerald-100 text-emerald-700',
+  ADVANCE: 'bg-violet-100 text-violet-700',
+  PRO:     'bg-amber-100 text-amber-700',
+}
+
+const STATUS_COLORS: Record<string, string> = {
+  ACTIVE:    'bg-green-100 text-green-700',
+  TRIAL:     'bg-amber-100 text-amber-700',
+  SUSPENDED: 'bg-red-100 text-red-600',
+  DELETED:   'bg-gray-100 text-gray-500',
+}
+
 export default async function OrgDetailPage({ params }: { params: { id: string } }) {
-  const org = await adminFetch<OrgDetail>(`/api/admin/orgs/${params.id}`)
+  const data = await adminFetch<{ org: OrgDetail }>(`/admin/orgs/${params.id}`)
+  const org = data.org
 
   return (
     <div className="space-y-6">
@@ -37,30 +54,18 @@ export default async function OrgDetailPage({ params }: { params: { id: string }
           <Link href="/orgs" className="text-sm text-sky-600 hover:text-sky-800">&larr; Organisations</Link>
           <h1 className="text-2xl font-bold text-gray-900 mt-1">{org.name}</h1>
           <div className="flex gap-2 mt-1">
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${
-              org.plan === 'business' ? 'bg-purple-100 text-purple-700' :
-              org.plan === 'pro' ? 'bg-sky-100 text-sky-700' :
-              'bg-gray-100 text-gray-600'
-            }`}>
+            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${PLAN_COLORS[org.plan] ?? 'bg-gray-100 text-gray-600'}`}>
               {org.plan}
             </span>
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${
-              org.status === 'active' ? 'bg-green-100 text-green-700' :
-              org.status === 'trial' ? 'bg-amber-100 text-amber-700' :
-              org.status === 'suspended' ? 'bg-red-100 text-red-600' :
-              'bg-gray-100 text-gray-500'
-            }`}>
+            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${STATUS_COLORS[org.status] ?? 'bg-gray-100 text-gray-500'}`}>
               {org.status}
             </span>
           </div>
         </div>
-        <Link
-          href={`/orgs/${org.id}/feature-overrides`}
-          className="text-sm bg-gray-100 text-gray-700 px-4 py-2 rounded-xl font-medium hover:bg-gray-200 transition-colors"
-        >
-          Feature Overrides
-        </Link>
       </div>
+
+      {/* Subscription control */}
+      <PlanControl orgId={org.id} currentPlan={org.plan} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="bg-white rounded-2xl border border-gray-200 p-4">
@@ -83,22 +88,6 @@ export default async function OrgDetailPage({ params }: { params: { id: string }
           <InfoRow label="Total revenue" value={`RM ${org.totalRevenue.toFixed(2)}`} />
         </div>
       </div>
-
-      {Object.keys(org.featureOverrides).length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-4">
-          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Active feature overrides</h2>
-          <div className="space-y-2">
-            {Object.entries(org.featureOverrides).map(([feature, enabled]) => (
-              <div key={feature} className="flex justify-between py-1">
-                <span className="text-sm text-gray-700 font-mono">{feature}</span>
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${enabled ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
-                  {enabled ? 'enabled' : 'disabled'}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

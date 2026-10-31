@@ -22,8 +22,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900">FoundTab Portal</h1>
-          <p className="text-sm text-gray-500 mt-1">Admin access only</p>
+          <img src="/logo.png" alt="FoundTab" className="h-10 mx-auto" />
+          <span className="inline-block mt-2 text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Admin Portal</span>
         </div>
 
         {error && (
