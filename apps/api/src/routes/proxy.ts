@@ -12,7 +12,7 @@ router.all('*', requirePortalSecret, async (req, res, next) => {
       method: req.method,
       headers: {
         'Content-Type': 'application/json',
-        'x-admin-api-key': env.FOUNDTAB_ADMIN_API_KEY,
+        'x-admin-key': env.FOUNDTAB_ADMIN_API_KEY,
       },
       ...(hasBody ? { body: JSON.stringify(req.body) } : {}),
     })

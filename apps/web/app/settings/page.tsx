@@ -1,13 +1,11 @@
-import { adminFetch } from '../../src/lib/adminApi'
+import { adminFetch } from '@/lib/adminApi'
 
 type PlatformStats = {
   totalOrgs: number
   activeOrgs: number
   trialOrgs: number
-  suspendedOrgs: number
-  totalMembers: number
-  totalRevenue: number
-  planBreakdown: Record<string, number>
+  byPlan: Record<string, number>
+  mrrEstimate: number
 }
 
 function StatCard({ label, value }: { label: string; value: string | number }) {
@@ -30,16 +28,14 @@ export default async function SettingsPage() {
         <StatCard label="Total orgs" value={stats.totalOrgs} />
         <StatCard label="Active" value={stats.activeOrgs} />
         <StatCard label="On trial" value={stats.trialOrgs} />
-        <StatCard label="Suspended" value={stats.suspendedOrgs} />
-        <StatCard label="Total members" value={stats.totalMembers} />
-        <StatCard label="Total revenue" value={`RM ${stats.totalRevenue.toFixed(2)}`} />
+        <StatCard label="MRR estimate" value={`RM ${stats.mrrEstimate}`} />
       </div>
 
-      {Object.keys(stats.planBreakdown).length > 0 && (
+      {Object.keys(stats.byPlan).length > 0 && (
         <div className="bg-white rounded-2xl border border-gray-200 p-4">
           <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Plan breakdown</h2>
           <div className="space-y-2">
-            {Object.entries(stats.planBreakdown).map(([plan, count]) => (
+            {Object.entries(stats.byPlan).map(([plan, count]) => (
               <div key={plan} className="flex justify-between items-center py-1">
                 <span className="text-sm text-gray-700 capitalize">{plan}</span>
                 <span className="text-sm font-semibold text-gray-900">{count} orgs</span>

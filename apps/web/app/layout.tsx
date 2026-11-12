@@ -6,11 +6,12 @@ import Sidebar from '../src/components/Sidebar'
 export const metadata: Metadata = {
   title: 'FoundTab Portal',
   description: 'FoundTab Internal Admin Portal',
+  icons: { icon: '/favicon.png' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="bg-gray-50">
         <Providers>
           <div className="flex min-h-screen">

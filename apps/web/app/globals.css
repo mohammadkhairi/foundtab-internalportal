@@ -4,17 +4,17 @@
 
 @layer base {
   :root {
-    --brand-50: #FBF7EE;
-    --brand-100: #F3E8CC;
-    --brand-200: #E5CE98;
-    --brand-300: #D4AD64;
-    --brand-400: #C9A84C;
-    --brand-500: #B8923A;
-    --brand-600: #9A7530;
-    --brand-700: #7A5A22;
-    --brand-800: #5A3F14;
-    --brand-900: #3A250A;
-    --brand-950: #1C0F05;
+    --brand-50: #EEF2FF;
+    --brand-100: #E0E7FF;
+    --brand-200: #C7D2FE;
+    --brand-300: #A5B4FC;
+    --brand-400: #818CF8;
+    --brand-500: #6366F1;
+    --brand-600: #4F46E5;
+    --brand-700: #4338CA;
+    --brand-800: #3730A3;
+    --brand-900: #312E81;
+    --brand-950: #1E1B4B;
   }
 }
 

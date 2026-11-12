@@ -1,5 +1,7 @@
-import { adminFetch } from '../../src/lib/adminApi'
+import { adminFetch } from '@/lib/adminApi'
 import Link from 'next/link'
+import CreateOrgModal from './CreateOrgModal'
+import BillingRunButton from './BillingRunButton'
 
 type Org = {
   id: string
@@ -37,17 +39,18 @@ function formatDate(iso: string): string {
 }
 
 type PageProps = {
-  searchParams: { page?: string; search?: string }
+  searchParams: Promise<{ page?: string; search?: string }>
 }
 
 export default async function OrgsPage({ searchParams }: PageProps) {
-  const page = Math.max(1, Number(searchParams.page ?? 1))
-  const search = searchParams.search ?? ''
+  const { page: pageParam, search: searchParam } = await searchParams
+  const page = Math.max(1, Number(pageParam ?? 1))
+  const search = searchParam ?? ''
 
   const params = new URLSearchParams({ page: String(page) })
   if (search) params.set('search', search)
 
-  const data = await adminFetch<ListResponse>(`/admin/orgs?${params.toString()}`)
+  const data = await adminFetch<ListResponse>(`/api/admin/orgs?${params.toString()}`)
   const totalPages = Math.ceil(data.total / data.pageSize)
   const start = (data.page - 1) * data.pageSize + 1
   const end = Math.min(data.page * data.pageSize, data.total)
@@ -65,25 +68,29 @@ export default async function OrgsPage({ searchParams }: PageProps) {
           <h1 className="text-2xl font-bold text-gray-900">Organisations</h1>
           <p className="text-sm text-gray-500 mt-0.5">{data.total} total</p>
         </div>
-        <form method="GET" action="/orgs" className="flex gap-2">
-          <input
-            name="search"
-            defaultValue={search}
-            placeholder="Search name…"
-            className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-52 focus:outline-none focus:ring-2 focus:ring-brand-400"
-          />
-          <button
-            type="submit"
-            className="bg-brand-500 text-white text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand-600 transition-colors"
-          >
-            Search
-          </button>
-          {search && (
-            <Link href="/orgs" className="text-sm text-gray-500 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
-              Clear
-            </Link>
-          )}
-        </form>
+        <div className="flex items-center gap-3">
+          <BillingRunButton />
+          <CreateOrgModal />
+          <form method="GET" action="/orgs" className="flex gap-2">
+            <input
+              name="search"
+              defaultValue={search}
+              placeholder="Name, reg. no., or email…"
+              className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-64 focus:outline-none focus:ring-2 focus:ring-brand-400"
+            />
+            <button
+              type="submit"
+              className="bg-brand-500 text-white text-sm font-semibold px-3 py-1.5 rounded-lg hover:bg-brand-600 transition-colors"
+            >
+              Search
+            </button>
+            {search && (
+              <Link href="/orgs" className="text-sm text-gray-500 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                Clear
+              </Link>
+            )}
+          </form>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -126,12 +133,13 @@ export default async function OrgsPage({ searchParams }: PageProps) {
 
         {data.items.length === 0 && (
           <div className="py-12 text-center">
-            <p className="text-sm text-gray-400">{search ? `No organisations matching "${search}".` : 'No organisations yet.'}</p>
+            <p className="text-sm text-gray-400">
+              {search ? `No organisations matching "${search}".` : 'No organisations yet.'}
+            </p>
           </div>
         )}
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-4 px-1">
           <p className="text-xs text-gray-400">

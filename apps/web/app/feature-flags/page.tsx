@@ -11,55 +11,30 @@ type ModuleKey =
 
 type FeatureFlags = Record<ModuleKey, boolean>
 
-type ModuleMeta = { key: ModuleKey; label: string; tier: 'starter' | 'growth' | 'advance' | 'pro' }
-
-const MODULES: ModuleMeta[] = [
-  { key: 'dashboard',          label: 'Summary Dashboard',     tier: 'starter' },
-  { key: 'purchases',          label: 'Purchases',             tier: 'starter' },
-  { key: 'rawMaterials',       label: 'Raw Materials',         tier: 'starter' },
-  { key: 'products',           label: 'Products / SKU',        tier: 'starter' },
-  { key: 'recipes',            label: 'Recipes / Costing',     tier: 'starter' },
-  { key: 'orders',             label: 'Orders / Sales',        tier: 'starter' },
-  { key: 'productions',        label: 'Productions',           tier: 'starter' },
-  { key: 'fixedCosts',         label: 'Fixed Costs',           tier: 'growth' },
-  { key: 'assetPurchases',     label: 'Asset Purchases',       tier: 'growth' },
-  { key: 'staffPayroll',       label: 'Staff & Payroll',       tier: 'growth' },
-  { key: 'miscExpenses',       label: 'Misc Expenses',         tier: 'growth' },
-  { key: 'customerDatabase',   label: 'Customer Database',     tier: 'growth' },
-  { key: 'wastageReport',      label: 'Wastage Report',        tier: 'growth' },
-  { key: 'productPerformance', label: 'Product Performance',   tier: 'growth' },
-  { key: 'humanResource',      label: 'Human Resource',        tier: 'advance' },
-  { key: 'menuEngineering',    label: 'Menu Engineering',      tier: 'advance' },
-  { key: 'documentation',      label: 'Documentation',         tier: 'advance' },
-  { key: 'accounting',         label: 'Accounting',            tier: 'pro' },
-  { key: 'cashFlow',           label: 'Cash Flow Management',  tier: 'pro' },
-  { key: 'morningReport',      label: 'Morning Report',        tier: 'pro' },
+const MODULES: { key: ModuleKey; label: string }[] = [
+  { key: 'dashboard',          label: 'Summary Dashboard' },
+  { key: 'purchases',          label: 'Purchases' },
+  { key: 'rawMaterials',       label: 'Raw Materials' },
+  { key: 'products',           label: 'Products / SKU' },
+  { key: 'recipes',            label: 'Recipes / Costing' },
+  { key: 'orders',             label: 'Orders / Sales' },
+  { key: 'productions',        label: 'Productions' },
+  { key: 'fixedCosts',         label: 'Fixed Costs' },
+  { key: 'assetPurchases',     label: 'Asset Purchases' },
+  { key: 'staffPayroll',       label: 'Staff & Payroll' },
+  { key: 'miscExpenses',       label: 'Misc Expenses' },
+  { key: 'customerDatabase',   label: 'Customer Database' },
+  { key: 'wastageReport',      label: 'Wastage Report' },
+  { key: 'productPerformance', label: 'Product Performance' },
+  { key: 'humanResource',      label: 'Human Resource' },
+  { key: 'menuEngineering',    label: 'Menu Engineering' },
+  { key: 'documentation',      label: 'Documentation' },
+  { key: 'accounting',         label: 'Accounting' },
+  { key: 'cashFlow',           label: 'Cash Flow Management' },
+  { key: 'morningReport',      label: 'Morning Report' },
 ]
 
-const TIER_LABELS: Record<string, string> = {
-  starter: 'Starter',
-  growth: 'Growth',
-  advance: 'Advance',
-  pro: 'Pro',
-}
-
-const TIER_COLORS: Record<string, string> = {
-  starter: 'bg-brand-100 text-brand-700',
-  growth: 'bg-emerald-100 text-emerald-700',
-  advance: 'bg-violet-100 text-violet-700',
-  pro: 'bg-amber-100 text-amber-700',
-}
-
-const TIERS = ['starter', 'growth', 'advance', 'pro'] as const
-
-const DEFAULTS: FeatureFlags = {
-  purchases: true, rawMaterials: true, products: true, recipes: true,
-  orders: true, productions: true, dashboard: true,
-  fixedCosts: false, assetPurchases: false, staffPayroll: false, miscExpenses: false,
-  customerDatabase: false, wastageReport: false, productPerformance: false,
-  humanResource: false, menuEngineering: false, documentation: false,
-  accounting: false, cashFlow: false, morningReport: false,
-}
+const DEFAULTS: FeatureFlags = Object.fromEntries(MODULES.map((m) => [m.key, false])) as FeatureFlags
 
 export default function FeatureFlagsPage() {
   const [flags, setFlags] = useState<FeatureFlags>(DEFAULTS)
@@ -81,6 +56,11 @@ export default function FeatureFlagsPage() {
     setSaved(false)
   }
 
+  function setAll(value: boolean) {
+    setFlags(Object.fromEntries(MODULES.map((m) => [m.key, value])) as FeatureFlags)
+    setSaved(false)
+  }
+
   async function handleSave() {
     setSaving(true)
     setError(null)
@@ -93,7 +73,7 @@ export default function FeatureFlagsPage() {
       })
       setSaved(true)
     } catch {
-      setError('Save failed. Check admin key and backend.')
+      setError('Save failed.')
     } finally {
       setSaving(false)
     }
@@ -101,51 +81,51 @@ export default function FeatureFlagsPage() {
 
   if (loading) return <p className="text-sm text-gray-500 p-6">Loading...</p>
 
+  const enabledCount = MODULES.filter((m) => flags[m.key]).length
+
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Feature Flags</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Module Kill-Switches</h1>
         <p className="text-sm text-gray-500 mt-0.5">
-          Toggle modules on/off globally. Changes take effect immediately — no deploy needed.
+          Global on/off for each module — applies to <strong>all organisations</strong> regardless of their subscription plan.
+          Use to disable a module for maintenance or staged rollouts.
         </p>
       </div>
 
-      {TIERS.map((tier) => {
-        const modules = MODULES.filter((m) => m.tier === tier)
-        return (
-          <section key={tier}>
-            <div className="flex items-center gap-2 mb-2">
-              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${TIER_COLORS[tier]}`}>
-                {TIER_LABELS[tier]}
-              </span>
-              <span className="text-xs text-gray-400">
-                {modules.filter((m) => flags[m.key]).length}/{modules.length} enabled
-              </span>
-            </div>
-            <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
-              {modules.map((mod) => (
-                <div key={mod.key} className="flex items-center justify-between px-4 py-3">
-                  <span className="text-sm font-medium text-gray-900">{mod.label}</span>
-                  <button
-                    role="switch"
-                    aria-checked={flags[mod.key]}
-                    onClick={() => toggle(mod.key)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
-                      flags[mod.key] ? 'bg-brand-500' : 'bg-gray-200'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform ${
-                        flags[mod.key] ? 'translate-x-6' : 'translate-x-1'
-                      }`}
-                    />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </section>
-        )
-      })}
+      <div className="bg-white rounded-2xl border border-gray-200 divide-y divide-gray-100">
+        <div className="px-4 py-2.5 flex items-center justify-between bg-gray-50 rounded-t-2xl">
+          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Module</span>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-400">{enabledCount}/{MODULES.length} enabled</span>
+            <button onClick={() => setAll(true)} className="text-xs font-medium text-brand-600 hover:text-brand-800 transition-colors">
+              Enable all
+            </button>
+            <button onClick={() => setAll(false)} className="text-xs font-medium text-red-500 hover:text-red-700 transition-colors">
+              Disable all
+            </button>
+          </div>
+        </div>
+        {MODULES.map((mod) => (
+          <div key={mod.key} className="flex items-center justify-between px-4 py-3">
+            <span className="text-sm font-medium text-gray-900">{mod.label}</span>
+            <button
+              role="switch"
+              aria-checked={flags[mod.key]}
+              onClick={() => toggle(mod.key)}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
+                flags[mod.key] ? 'bg-brand-500' : 'bg-gray-200'
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 rounded-full bg-white shadow transform transition-transform ${
+                  flags[mod.key] ? 'translate-x-6' : 'translate-x-1'
+                }`}
+              />
+            </button>
+          </div>
+        ))}
+      </div>
 
       <div className="flex items-center gap-4 pt-2">
         <button
@@ -153,7 +133,7 @@ export default function FeatureFlagsPage() {
           disabled={saving}
           className="bg-brand-500 text-white font-semibold px-6 py-2.5 rounded-lg text-sm hover:bg-brand-600 transition-colors disabled:opacity-60"
         >
-          {saving ? 'Saving...' : 'Save flags'}
+          {saving ? 'Saving...' : 'Save'}
         </button>
         {saved && <p className="text-sm text-emerald-600 font-medium">Saved.</p>}
         {error && <p className="text-sm text-red-600">{error}</p>}
