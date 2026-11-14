@@ -1,13 +1,13 @@
 import { env } from '../config/env'
 
-class BackendApiError extends Error {
-  constructor(
-    public status: number,
-    message: string,
-  ) {
-    super(message)
-    this.name = 'BackendApiError'
-  }
+type BackendApiError = { type: 'BackendApiError'; status: number; message: string }
+
+function makeBackendApiError(status: number, message: string): BackendApiError {
+  return { type: 'BackendApiError', status, message }
+}
+
+export function isBackendApiError(err: unknown): err is BackendApiError {
+  return typeof err === 'object' && err !== null && (err as BackendApiError).type === 'BackendApiError'
 }
 
 async function request<T>({
@@ -32,7 +32,7 @@ async function request<T>({
   const data = (await res.json()) as T
   if (!res.ok) {
     const msg = (data as { message?: string }).message ?? `Backend error ${res.status}`
-    throw new BackendApiError(res.status, msg)
+    throw makeBackendApiError(res.status, msg)
   }
   return data
 }
@@ -103,4 +103,4 @@ export async function getAdminStats() {
   return request<unknown>({ method: 'GET', path: '/api/admin/stats' })
 }
 
-export { BackendApiError }
+export type { BackendApiError }

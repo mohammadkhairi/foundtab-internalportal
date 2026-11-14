@@ -1,7 +1,26 @@
 import cron from 'node-cron'
 import * as backend from '../services/backendApiService'
+import { isBackendApiError } from '../services/backendApiService'
 
 type OrgItem = { id: string; name?: string }
+
+const CONCURRENCY = 5
+
+async function processOrg(org: OrgItem): Promise<'success' | 'skipped' | 'failed'> {
+  try {
+    await backend.generateInvoice({ orgId: org.id })
+    console.log(`[invoiceBillingJob] ✓ Generated invoice for org ${org.id} (${org.name ?? '—'})`)
+    return 'success'
+  } catch (err) {
+    // Backend returns 422/400 for orgs with no active subscription — treat as expected skip
+    if (isBackendApiError(err) && (err.status === 422 || err.status === 400)) {
+      console.log(`[invoiceBillingJob] — Skipped org ${org.id}: ${err.message}`)
+      return 'skipped'
+    }
+    console.error(`[invoiceBillingJob] ✗ Failed org ${org.id}:`, err)
+    return 'failed'
+  }
+}
 
 async function runInvoiceGeneration() {
   console.log('[invoiceBillingJob] Starting monthly invoice generation...')
@@ -16,30 +35,16 @@ async function runInvoiceGeneration() {
 
   console.log(`[invoiceBillingJob] Processing ${orgs.length} orgs`)
 
-  let success = 0
-  let skipped = 0
-  let failed = 0
+  const results = { success: 0, skipped: 0, failed: 0 }
 
-  for (const org of orgs) {
-    try {
-      await backend.generateInvoice({ orgId: org.id })
-      console.log(`[invoiceBillingJob] ✓ Generated invoice for org ${org.id} (${org.name ?? '—'})`)
-      success++
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err)
-      // Backend returns 422/400 for orgs with no active subscription — treat as expected skip
-      if (msg.includes('subscription') || msg.includes('no active') || msg.includes('422') || msg.includes('400')) {
-        console.log(`[invoiceBillingJob] — Skipped org ${org.id}: ${msg}`)
-        skipped++
-      } else {
-        console.error(`[invoiceBillingJob] ✗ Failed org ${org.id}: ${msg}`)
-        failed++
-      }
-    }
+  for (let i = 0; i < orgs.length; i += CONCURRENCY) {
+    const batch = orgs.slice(i, i + CONCURRENCY)
+    const outcomes = await Promise.all(batch.map(processOrg))
+    for (const outcome of outcomes) results[outcome]++
   }
 
   console.log(
-    `[invoiceBillingJob] Done — ${success} generated, ${skipped} skipped (no subscription), ${failed} failed`,
+    `[invoiceBillingJob] Done — ${results.success} generated, ${results.skipped} skipped (no subscription), ${results.failed} failed`,
   )
 }
 
