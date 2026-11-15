@@ -21,7 +21,7 @@ export default function Sidebar() {
   return (
     <aside className="w-56 bg-brand-950 border-r border-brand-900 flex flex-col min-h-screen">
       <div className="px-5 py-4 border-b border-brand-900 flex items-center gap-2.5">
-        <Image src="/logo.png" alt="FoundTab" width={96} height={32} className="h-8 w-auto object-contain" />
+        <Image src="/logo.png" alt="FoundTab" width={96} height={32} style={{ height: '2rem', width: 'auto' }} className="object-contain" priority />
         <span className="text-[10px] font-semibold text-brand-500 uppercase tracking-widest mt-0.5">Portal</span>
       </div>
 
