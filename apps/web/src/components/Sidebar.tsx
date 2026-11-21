@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 
 const NAV = [
-  { href: '/settings', label: 'Dashboard' },
+  { href: '/settings', label: 'Settings' },
   { href: '/orgs', label: 'Organisations' },
   { href: '/plans', label: 'Plans' },
   { href: '/feature-flags', label: 'Module Flags' },

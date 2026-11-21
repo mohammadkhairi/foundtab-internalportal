@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { adminFetch } from '@/lib/adminApi'
 import Link from 'next/link'
 import CreateOrgModal from './CreateOrgModal'
