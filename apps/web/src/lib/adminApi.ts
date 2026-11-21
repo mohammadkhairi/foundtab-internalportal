@@ -16,7 +16,7 @@ type AdminFetchOptions = RequestInit
 export async function adminFetch<T>(path: string, options: AdminFetchOptions = {}): Promise<T> {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    'x-admin-key': env.FOUNDTAB_ADMIN_API_KEY,
+    'x-portal-secret': env.PORTAL_INTERNAL_SECRET,
     ...options.headers,
   }
 

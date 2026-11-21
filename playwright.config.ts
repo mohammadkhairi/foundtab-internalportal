@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 60_000,
   workers: 1,
   use: {
-    baseURL: 'https://staging-portal.foundtab.com',
+    baseURL: 'https://portal.foundtab.com',
     headless: true,
     viewport: { width: 1280, height: 800 },
     navigationTimeout: 30_000,
