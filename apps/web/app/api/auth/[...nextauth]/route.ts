@@ -1,8 +1,6 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-const PORTAL_API_URL = process.env.PORTAL_API_INTERNAL_URL ?? 'http://localhost:4000'
-
 type PortalUser = { id: string; email: string; name: string; role: string }
 
 const handler = NextAuth({
@@ -15,8 +13,9 @@ const handler = NextAuth({
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials.password) return null
+        const portalApiUrl = process.env.PORTAL_API_INTERNAL_URL ?? 'http://localhost:4000'
         try {
-          const res = await fetch(`${PORTAL_API_URL}/api/auth/login`, {
+          const res = await fetch(`${portalApiUrl}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: credentials.email, password: credentials.password }),

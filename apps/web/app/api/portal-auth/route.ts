@@ -1,13 +1,17 @@
 import { NextResponse } from 'next/server'
 
-const PORTAL_API_URL = process.env.PORTAL_API_INTERNAL_URL ?? 'http://localhost:4000'
+function portalApiUrl() {
+  return process.env.PORTAL_API_INTERNAL_URL ?? 'http://localhost:4000'
+}
 
 export async function GET() {
   try {
-    const res = await fetch(`${PORTAL_API_URL}/api/auth/has-users`)
+    const res = await fetch(`${portalApiUrl()}/api/auth/has-users`)
     const data = (await res.json()) as { hasUsers: boolean }
     return NextResponse.json(data)
-  } catch {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error('[portal-auth GET] failed to reach portal API:', portalApiUrl(), message)
     return NextResponse.json({ hasUsers: false })
   }
 }
@@ -15,7 +19,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json() as unknown
-    const res = await fetch(`${PORTAL_API_URL}/api/auth/setup`, {
+    const res = await fetch(`${portalApiUrl()}/api/auth/setup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
