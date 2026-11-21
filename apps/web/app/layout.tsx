@@ -5,7 +5,7 @@ import Sidebar from '../src/components/Sidebar'
 
 export const metadata: Metadata = {
   title: 'FoundTab Portal',
-  description: 'FoundTab Admin Portal',
+  description: 'FoundTab Portal',
   icons: { icon: '/favicon.png' },
 }
 
