@@ -6,7 +6,7 @@ import postgres from 'postgres'
 
 async function run() {
   const client = postgres(process.env['DATABASE_URL'] ?? '', { max: 1 })
-  const result = await client`TRUNCATE users RESTART IDENTITY CASCADE`
+  const result = await client`TRUNCATE portal_users RESTART IDENTITY CASCADE`
   console.log('Users table cleared:', result)
   await client.end()
 }
