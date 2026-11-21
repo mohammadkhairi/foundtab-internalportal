@@ -40,5 +40,10 @@ export default [
     files: ['{src,app}/**/*.tsx'],
     rules: { 'max-params': ['error', 2] },
   },
+  // Next.js route handlers receive (request, context) — 2 params is the framework pattern
+  {
+    files: ['app/api/**/*.ts'],
+    rules: { 'max-params': ['error', 2] },
+  },
   prettierConfig,
 ]
