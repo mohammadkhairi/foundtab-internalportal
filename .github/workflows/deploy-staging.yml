@@ -74,38 +74,29 @@ jobs:
         run: npm ci
 
       - name: Pull Vercel project settings (preview)
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: apps/web
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }} --cwd apps/web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Build
-        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
-        working-directory: apps/web
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }} --cwd apps/web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           PORTAL_INTERNAL_SECRET: ${{ secrets.PORTAL_INTERNAL_SECRET }}
 
-      - name: Link node_modules for Vercel deploy
-        run: |
-          rm -rf apps/web/node_modules
-          ln -sf ../../node_modules apps/web/node_modules
-
       - name: Deploy to Vercel (staging preview)
         id: deploy
         run: |
-          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} --cwd apps/web)
           echo "url=$url" >> $GITHUB_OUTPUT
-        working-directory: apps/web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Alias to staging-portal.foundtab.com
         run: vercel alias set ${{ steps.deploy.outputs.url }} staging-portal.foundtab.com --token=${{ secrets.VERCEL_TOKEN }} --scope foundtab
-        working-directory: apps/web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
