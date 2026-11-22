@@ -71,7 +71,12 @@ jobs:
         run: npm install -g vercel
 
       - name: Install dependencies
-        run: npm ci --workspace=apps/web
+        run: npm ci
+
+      - name: Link node_modules for Vercel deploy
+        run: |
+          rm -rf apps/web/node_modules
+          ln -sf ../../node_modules apps/web/node_modules
 
       - name: Pull Vercel project settings (preview)
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
