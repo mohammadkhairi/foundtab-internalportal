@@ -2,31 +2,100 @@ name: Deploy to Production
 
 on:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch, tag, or commit SHA to deploy'
+        required: true
+        default: 'main'
+
+concurrency:
+  group: portal-production-deploy
+  cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Deploy to Vercel (production)
+  deploy-api:
+    name: Typecheck · Build · Migrate · Deploy API (production)
     runs-on: ubuntu-latest
     environment: production
-    if: github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc
+          node-version: '22'
           cache: npm
+          cache-dependency-path: apps/api/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: apps/api
+
+      - name: Typecheck
+        run: npm run typecheck
+        working-directory: apps/api
+
+      - name: Build
+        run: npm run build
+        working-directory: apps/api
+
+      - name: Run migrations (production)
+        run: npx drizzle-kit migrate
+        working-directory: apps/api
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Deploy to Railway (production)
+        run: |
+          npm install -g @railway/cli
+          railway up --service foundtab-portal-api --environment production
+        working-directory: apps/api
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+  deploy-web:
+    name: Build · Deploy Web (production)
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
 
       - name: Install Vercel CLI
         run: npm install -g vercel
 
       - name: Install dependencies
-        run: npm ci --workspace=apps/web
+        run: npm ci
+        working-directory: apps/web
+
+      - name: Pull Vercel project settings (production)
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/web
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+      - name: Build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: apps/web
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Deploy to Vercel (production)
-        run: vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: apps/web
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
