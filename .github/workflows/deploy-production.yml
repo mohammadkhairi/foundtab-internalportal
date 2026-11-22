@@ -73,11 +73,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Link node_modules for Vercel deploy
-        run: |
-          rm -rf apps/web/node_modules
-          ln -sf ../../node_modules apps/web/node_modules
-
       - name: Pull Vercel project settings (production)
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: apps/web
@@ -92,6 +87,11 @@ jobs:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
           PORTAL_INTERNAL_SECRET: ${{ secrets.PORTAL_INTERNAL_SECRET }}
+
+      - name: Link node_modules for Vercel deploy
+        run: |
+          rm -rf apps/web/node_modules
+          ln -sf ../../node_modules apps/web/node_modules
 
       - name: Deploy to Vercel (production)
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
