@@ -7,12 +7,16 @@ function portalApiUrl() {
 export async function GET() {
   try {
     const res = await fetch(`${portalApiUrl()}/api/auth/has-users`)
+    if (!res.ok) {
+      console.error('[portal-auth GET] portal API returned', res.status, portalApiUrl())
+      return NextResponse.json({ hasUsers: true })
+    }
     const data = (await res.json()) as { hasUsers: boolean }
     return NextResponse.json(data)
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err)
     console.error('[portal-auth GET] failed to reach portal API:', portalApiUrl(), message)
-    return NextResponse.json({ hasUsers: false })
+    return NextResponse.json({ hasUsers: true })
   }
 }
 
