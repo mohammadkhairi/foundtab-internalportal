@@ -11,7 +11,7 @@ const PASSWORD_RULES = [
   { label: 'Special character', test: (pw: string) => /[^A-Za-z0-9]/.test(pw) },
 ]
 
-export function InviteUserModal() {
+export function InviteUserModal({ currentUserRole }: { currentUserRole: 'ADMIN' | 'SUPERADMIN' }) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
@@ -101,7 +101,9 @@ export function InviteUserModal() {
                 className="w-full border border-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
               >
                 <option value="ADMIN">Admin</option>
-                <option value="SUPERADMIN">Superadmin</option>
+                {currentUserRole === 'SUPERADMIN' && (
+                  <option value="SUPERADMIN">Superadmin</option>
+                )}
               </select>
 
               {error && (

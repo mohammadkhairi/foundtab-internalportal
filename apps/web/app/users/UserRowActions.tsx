@@ -16,32 +16,48 @@ type Props = {
 export function UserRowActions({ id, isActive, role, isSelf, currentUserRole }: Props) {
   const router = useRouter()
   const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const isProtected = isSelf || (currentUserRole === 'ADMIN' && role === 'SUPERADMIN')
 
   async function toggleActive() {
     setBusy(true)
-    await fetch(`/api/admin/portal-users/${id}?action=active`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ isActive: !isActive }),
-    })
-    router.refresh()
-    setBusy(false)
+    setError(null)
+    try {
+      const res = await fetch(`/api/admin/portal-users/${id}?action=active`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive: !isActive }),
+      })
+      if (!res.ok) throw new Error('Failed')
+      router.refresh()
+    } catch {
+      setError('Action failed. Please try again.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   async function changeRole(newRole: Role) {
     setBusy(true)
-    await fetch(`/api/admin/portal-users/${id}?action=role`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: newRole }),
-    })
-    router.refresh()
-    setBusy(false)
+    setError(null)
+    try {
+      const res = await fetch(`/api/admin/portal-users/${id}?action=role`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: newRole }),
+      })
+      if (!res.ok) throw new Error('Failed')
+      router.refresh()
+    } catch {
+      setError('Action failed. Please try again.')
+    } finally {
+      setBusy(false)
+    }
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 flex-wrap">
+      {error && <span className="text-xs text-red-500 w-full">{error}</span>}
       <select
         value={role}
         disabled={isProtected || busy}

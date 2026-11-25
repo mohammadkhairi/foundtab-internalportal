@@ -16,9 +16,14 @@ export async function GET() {
 export async function POST(req: Request) {
   const session = await getServerSession()
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const callerRole = (session.user as { role?: string } | undefined)?.role ?? 'ADMIN'
   try {
     const body = await req.json() as unknown
-    const data = await adminFetch('/api/admin/portal-users', { method: 'POST', body: JSON.stringify(body) })
+    const data = await adminFetch('/api/admin/portal-users', {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: { 'x-caller-role': callerRole },
+    })
     return NextResponse.json(data, { status: 201 })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed'

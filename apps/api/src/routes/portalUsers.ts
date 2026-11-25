@@ -26,6 +26,11 @@ const createSchema = z.object({
 router.post('/', validateBody(createSchema), async (req, res, next) => {
   try {
     const { name, email, password, role } = req.body as z.infer<typeof createSchema>
+    const callerRole = req.headers['x-caller-role']
+    if (role === 'SUPERADMIN' && callerRole !== 'SUPERADMIN') {
+      res.status(403).json({ error: 'FORBIDDEN', message: 'Only a superadmin can create a superadmin user' })
+      return
+    }
     const existing = await userRepository.findByEmail({ email })
     if (existing) {
       res.status(409).json({ error: 'EMAIL_TAKEN', message: 'A user with this email already exists' })
@@ -58,6 +63,11 @@ router.patch('/:id/role', validateBody(roleSchema), async (req, res, next) => {
   try {
     const { id } = req.params as { id: string }
     const { role } = req.body as z.infer<typeof roleSchema>
+    const callerRole = req.headers['x-caller-role']
+    if (role === 'SUPERADMIN' && callerRole !== 'SUPERADMIN') {
+      res.status(403).json({ error: 'FORBIDDEN', message: 'Only a superadmin can promote to superadmin' })
+      return
+    }
     await userRepository.updateUserRole({ id, role })
     res.json({ ok: true })
   } catch (err) {

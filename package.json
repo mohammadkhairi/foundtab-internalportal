@@ -10,6 +10,7 @@
     "dev:api": "npm run dev --workspace=apps/api"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "concurrently": "^9.0.0"
   },
   "engines": {

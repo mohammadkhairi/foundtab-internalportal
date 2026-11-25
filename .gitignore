@@ -9,3 +9,4 @@ apps/api/dist/
 *.log
 .DS_Store
 tsconfig.tsbuildinfo
+.vercel

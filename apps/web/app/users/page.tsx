@@ -31,7 +31,7 @@ export default async function UsersPage() {
           <h1 className="text-2xl font-bold text-gray-900">Portal Users</h1>
           <p className="text-sm text-gray-500 mt-0.5">{users.length} {users.length === 1 ? 'user' : 'users'}</p>
         </div>
-        <InviteUserModal />
+        <InviteUserModal currentUserRole={currentUserRole} />
       </div>
 
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
