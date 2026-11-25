@@ -58,13 +58,7 @@ jobs:
           ref: ${{ inputs.ref }}
 
       - name: Install Vercel CLI
-        run: npm install -g vercel@59
-
-      - name: Pull Vercel project settings (production)
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} --cwd apps/web
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: npm install -g vercel@latest
 
       - name: Deploy to Vercel (production)
         run: vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }} --cwd apps/web
