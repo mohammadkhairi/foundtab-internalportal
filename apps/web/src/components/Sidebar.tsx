@@ -6,10 +6,11 @@ import { usePathname } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 
 const NAV = [
-  { href: '/settings', label: 'Settings' },
+  { href: '/settings', label: 'Dashboard' },
   { href: '/orgs', label: 'Organisations' },
   { href: '/plans', label: 'Plans' },
   { href: '/feature-flags', label: 'Module Flags' },
+  { href: '/users', label: 'Users' },
 ]
 
 export default function Sidebar() {

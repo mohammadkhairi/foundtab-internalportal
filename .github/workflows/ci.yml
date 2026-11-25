@@ -51,10 +51,10 @@ jobs:
       - name: Build
         run: npm run build --workspace=apps/web
         env:
-          PORTAL_API_URL: ${{ secrets.PORTAL_API_URL }}
-          PORTAL_INTERNAL_SECRET: ${{ secrets.PORTAL_INTERNAL_SECRET }}
+          PORTAL_API_URL: ${{ secrets.PORTAL_API_URL || 'http://localhost:4000' }}
+          PORTAL_INTERNAL_SECRET: ${{ secrets.PORTAL_INTERNAL_SECRET || 'ci-build-only-placeholder-secret-not-real' }}
           NEXT_PUBLIC_APP_ENV: staging
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
-          PORTAL_ALLOWED_EMAILS: ${{ secrets.PORTAL_ALLOWED_EMAILS }}
-          PORTAL_ADMIN_PASSWORD: ${{ secrets.PORTAL_ADMIN_PASSWORD }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'ci-build-only-nextauth-secret-placeholder' }}
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL || 'http://localhost:3000' }}
+          PORTAL_ALLOWED_EMAILS: ${{ secrets.PORTAL_ALLOWED_EMAILS || '' }}
+          PORTAL_ADMIN_PASSWORD: ${{ secrets.PORTAL_ADMIN_PASSWORD || '' }}

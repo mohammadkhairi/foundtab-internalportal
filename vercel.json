@@ -1,0 +1,20 @@
+{
+  "github": {
+    "enabled": false
+  },
+  "services": {
+    "api": {
+      "root": "apps/api",
+      "entrypoint": "src/app.ts"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": {
+        "type": "service",
+        "service": "api"
+      }
+    }
+  ]
+}

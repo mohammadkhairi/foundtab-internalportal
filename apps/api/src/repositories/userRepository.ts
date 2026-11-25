@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { db } from '../db/index'
-import { portalUsers, type NewPortalUser } from '../db/schema/index'
+import { portalUsers, type NewPortalUser, type PortalRole } from '../db/schema/index'
 
 export async function findByEmail({ email }: { email: string }) {
   return db().query.portalUsers.findFirst({
@@ -30,5 +30,12 @@ export async function setUserActive({ id, isActive }: { id: string; isActive: bo
   await db()
     .update(portalUsers)
     .set({ isActive, updatedAt: new Date() })
+    .where(eq(portalUsers.id, id))
+}
+
+export async function updateUserRole({ id, role }: { id: string; role: PortalRole }) {
+  await db()
+    .update(portalUsers)
+    .set({ role, updatedAt: new Date() })
     .where(eq(portalUsers.id, id))
 }

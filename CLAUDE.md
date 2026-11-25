@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # FoundTab Portal — Coding Rules
 
 All global rules in `~/.claude/CLAUDE.md` apply. This file adds repo-specific guidance.
