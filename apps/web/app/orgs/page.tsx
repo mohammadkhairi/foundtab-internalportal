@@ -3,7 +3,6 @@ export const dynamic = 'force-dynamic'
 import { adminFetch } from '@/lib/adminApi'
 import Link from 'next/link'
 import CreateOrgModal from './CreateOrgModal'
-import BillingRunButton from './BillingRunButton'
 
 type Org = {
   id: string
@@ -71,7 +70,6 @@ export default async function OrgsPage({ searchParams }: PageProps) {
           <p className="text-sm text-gray-500 mt-0.5">{data.total} total</p>
         </div>
         <div className="flex items-center gap-3">
-          <BillingRunButton />
           <CreateOrgModal />
           <form method="GET" action="/orgs" className="flex gap-2">
             <input

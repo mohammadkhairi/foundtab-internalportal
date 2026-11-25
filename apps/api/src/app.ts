@@ -6,6 +6,7 @@ import { flagsRouter } from './routes/flags'
 import { proxyRouter } from './routes/proxy'
 import { authRouter } from './routes/auth'
 import { jobsRouter } from './routes/jobs'
+import { portalUsersRouter } from './routes/portalUsers'
 
 export function createApp() {
   const app = express()
@@ -24,6 +25,7 @@ export function createApp() {
   app.use('/api/admin/plans', plansRouter)
   app.use('/api/admin/feature-flags', flagsRouter)
   app.use('/api/admin/jobs', jobsRouter)
+  app.use('/api/admin/portal-users', portalUsersRouter)
 
   // Catch-all proxy for anything not handled above
   app.use('/', proxyRouter)

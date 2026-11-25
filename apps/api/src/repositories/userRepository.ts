@@ -32,3 +32,10 @@ export async function setUserActive({ id, isActive }: { id: string; isActive: bo
     .set({ isActive, updatedAt: new Date() })
     .where(eq(portalUsers.id, id))
 }
+
+export async function updateUserRole({ id, role }: { id: string; role: import('../db/schema/index').PortalRole }) {
+  await db()
+    .update(portalUsers)
+    .set({ role, updatedAt: new Date() })
+    .where(eq(portalUsers.id, id))
+}
