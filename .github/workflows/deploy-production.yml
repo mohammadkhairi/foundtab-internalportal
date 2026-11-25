@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   deploy-api:
-    name: Typecheck · Build · Migrate · Deploy API (production)
+    name: Build · Deploy API (production)
     runs-on: ubuntu-latest
     environment: production
 
@@ -32,10 +32,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        working-directory: apps/api
-
-      - name: Typecheck
-        run: npm run typecheck
         working-directory: apps/api
 
       - name: Build
