@@ -53,27 +53,5 @@ jobs:
     environment: staging
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.ref || github.ref }}
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
-
-      - name: Deploy to Vercel (staging preview)
-        id: deploy
-        run: |
-          vercel deploy --cwd apps/web 2>&1 | tee /tmp/vercel-out.txt
-          url=$(grep -E '^https://' /tmp/vercel-out.txt | tail -1)
-          echo "url=$url" >> $GITHUB_OUTPUT
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-      - name: Alias to staging-portal.foundtab.com
-        run: vercel alias set ${{ steps.deploy.outputs.url }} staging-portal.foundtab.com
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      - name: Trigger Vercel deploy
+        run: curl -fsSL -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_STAGING }}"
