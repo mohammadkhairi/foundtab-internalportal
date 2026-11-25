@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { z } from 'zod'
 import { validateBody } from '../middleware/validateBody'
+import { createPortalUserSchema, setActiveSchema, setRoleSchema } from '../request/portalUsers'
 import * as userRepository from '../repositories/userRepository'
 import * as userService from '../services/userService'
 
@@ -16,16 +16,9 @@ router.get('/', async (_req, res, next) => {
   }
 })
 
-const createSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(12),
-  role: z.enum(['ADMIN', 'SUPERADMIN']).default('ADMIN'),
-}).strict()
-
-router.post('/', validateBody(createSchema), async (req, res, next) => {
+router.post('/', validateBody(createPortalUserSchema), async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body as z.infer<typeof createSchema>
+    const { name, email, password, role } = req.body as typeof createPortalUserSchema._type
     const callerRole = req.headers['x-caller-role']
     if (role === 'SUPERADMIN' && callerRole !== 'SUPERADMIN') {
       res.status(403).json({ error: 'FORBIDDEN', message: 'Only a superadmin can create a superadmin user' })
@@ -44,12 +37,10 @@ router.post('/', validateBody(createSchema), async (req, res, next) => {
   }
 })
 
-const activeSchema = z.object({ isActive: z.boolean() }).strict()
-
-router.patch('/:id/active', validateBody(activeSchema), async (req, res, next) => {
+router.patch('/:id/active', validateBody(setActiveSchema), async (req, res, next) => {
   try {
     const { id } = req.params as { id: string }
-    const { isActive } = req.body as z.infer<typeof activeSchema>
+    const { isActive } = req.body as typeof setActiveSchema._type
     await userRepository.setUserActive({ id, isActive })
     res.json({ ok: true })
   } catch (err) {
@@ -57,12 +48,10 @@ router.patch('/:id/active', validateBody(activeSchema), async (req, res, next) =
   }
 })
 
-const roleSchema = z.object({ role: z.enum(['ADMIN', 'SUPERADMIN']) }).strict()
-
-router.patch('/:id/role', validateBody(roleSchema), async (req, res, next) => {
+router.patch('/:id/role', validateBody(setRoleSchema), async (req, res, next) => {
   try {
     const { id } = req.params as { id: string }
-    const { role } = req.body as z.infer<typeof roleSchema>
+    const { role } = req.body as typeof setRoleSchema._type
     const callerRole = req.headers['x-caller-role']
     if (role === 'SUPERADMIN' && callerRole !== 'SUPERADMIN') {
       res.status(403).json({ error: 'FORBIDDEN', message: 'Only a superadmin can promote to superadmin' })
