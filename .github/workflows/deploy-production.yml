@@ -58,7 +58,7 @@ jobs:
           ref: ${{ inputs.ref }}
 
       - name: Install Vercel CLI
-        run: npm install -g vercel
+        run: npm install -g vercel@59
 
       - name: Pull Vercel project settings (production)
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }} --cwd apps/web
