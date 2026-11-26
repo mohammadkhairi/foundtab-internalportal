@@ -63,7 +63,7 @@ jobs:
       - name: Authenticate Vercel CLI
         run: |
           mkdir -p ~/.config/vercel
-          echo '{"token":"${{ secrets.VERCEL_TOKEN }}"}' > ~/.config/vercel/auth.json
+          echo '${{ secrets.VERCEL_AUTH_JSON }}' > ~/.config/vercel/auth.json
 
       - name: Pull Vercel project settings (preview)
         run: vercel pull --yes --environment=preview --cwd apps/web
