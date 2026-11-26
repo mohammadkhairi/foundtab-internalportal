@@ -58,11 +58,15 @@ jobs:
           ref: ${{ inputs.ref }}
 
       - name: Install Vercel CLI
-        run: npm install -g vercel@latest
+        run: npm install -g vercel
+
+      - name: Authenticate Vercel CLI
+        run: |
+          mkdir -p /tmp/vercel-config
+          echo '${{ secrets.VERCEL_AUTH_JSON }}' > /tmp/vercel-config/auth.json
 
       - name: Deploy to Vercel (production)
-        run: vercel deploy --prod --cwd apps/web
+        run: vercel -Q /tmp/vercel-config deploy --prod --cwd apps/web
         env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
