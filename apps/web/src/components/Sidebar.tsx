@@ -45,17 +45,17 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {session?.user && (
-        <div className="p-4 border-t border-brand-900">
-          <p className="text-xs text-brand-500 truncate">{session.user.email}</p>
-          <button
-            onClick={() => void signOut({ callbackUrl: '/login' })}
-            className="mt-2 text-xs text-brand-400 hover:text-brand-200 font-medium transition-colors"
-          >
-            Sign out
-          </button>
-        </div>
-      )}
+      <div className="p-4 border-t border-brand-900">
+        {session?.user?.email && (
+          <p className="text-xs text-brand-500 truncate mb-2">{session.user.email}</p>
+        )}
+        <button
+          onClick={() => void signOut({ callbackUrl: '/login' })}
+          className="text-xs text-brand-400 hover:text-brand-200 font-medium transition-colors"
+        >
+          Sign out
+        </button>
+      </div>
     </aside>
   )
 }

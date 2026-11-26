@@ -17,7 +17,8 @@ export function UserRowActions({ id, isActive, role, isSelf, currentUserRole }: 
   const router = useRouter()
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const isProtected = isSelf || (currentUserRole === 'ADMIN' && role === 'SUPERADMIN')
+  const activeProtected = isSelf || (currentUserRole === 'ADMIN' && role === 'SUPERADMIN')
+  const roleProtected = isSelf || currentUserRole === 'ADMIN'
 
   async function toggleActive() {
     setBusy(true)
@@ -60,7 +61,7 @@ export function UserRowActions({ id, isActive, role, isSelf, currentUserRole }: 
       {error && <span className="text-xs text-red-500 w-full">{error}</span>}
       <select
         value={role}
-        disabled={isProtected || busy}
+        disabled={roleProtected || busy}
         onChange={(e) => void changeRole(e.target.value as Role)}
         className="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:ring-2 focus:ring-brand-400 disabled:opacity-40"
       >
@@ -70,7 +71,7 @@ export function UserRowActions({ id, isActive, role, isSelf, currentUserRole }: 
 
       <button
         onClick={() => void toggleActive()}
-        disabled={isProtected || busy}
+        disabled={activeProtected || busy}
         className={`text-xs font-medium px-3 py-1 rounded-lg transition-colors disabled:opacity-40 ${
           isActive
             ? 'bg-red-50 text-red-600 hover:bg-red-100'
