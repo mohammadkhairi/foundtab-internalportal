@@ -50,7 +50,7 @@ export default function Sidebar() {
           <p className="text-xs text-brand-500 truncate mb-2">{session.user.email}</p>
         )}
         <button
-          onClick={() => void signOut({ callbackUrl: '/login' })}
+          onClick={() => void signOut({ callbackUrl: `${window.location.origin}/login` })}
           className="text-xs text-brand-400 hover:text-brand-200 font-medium transition-colors"
         >
           Sign out
